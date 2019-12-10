@@ -1,6 +1,0 @@
-[submodule "static/paint"]
-	path = static/paint
-	url = https://github.com/Kujiale-Mobile/PainterCore.git
-[submodule "static/painter"]
-	path = static/painter
-	url = https://github.com/Kujiale-Mobile/PainterCore.git
