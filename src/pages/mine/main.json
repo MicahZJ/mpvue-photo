@@ -3,5 +3,8 @@
   "navigationBarTextStyle": "black",
   "navigationBarTitleText": "我的",
   "backgroundColor": "#eeeeee",
-  "backgroundTextStyle": "light"
+  "backgroundTextStyle": "light",
+  "usingComponents": {
+    "painter": "/static/painter/painter"
+  }
 }

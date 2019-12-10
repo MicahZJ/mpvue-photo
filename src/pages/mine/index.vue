@@ -1,6 +1,7 @@
 <template lang="pug">
   div#mine-wrapper
-    button 保存
+    painter(:customStyle="customStyle" @imgOK="onImgOK" :palette="template" :dirty="true")
+    button(@click="save()") 保存12
 </template>
 
 <script src="./control.js"></script>

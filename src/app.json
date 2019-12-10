@@ -1,8 +1,7 @@
 {
   "pages": [
     "pages/mine/main",
-    "pages/logs/main",
-    "pages/demo/main"
+    "pages/logs/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
