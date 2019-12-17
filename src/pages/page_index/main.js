@@ -6,7 +6,7 @@ app.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: 'demo',
+    // navigationBarTitleText: 'demo',
     usingComponents: {
       'painter': '/static/painter/painter'
     }
