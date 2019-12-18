@@ -1,6 +1,7 @@
 {
   "pages": [
-    "pages/page_index/main",
+    "pages/painter_index/main",
+    "pages/painter_image/main",
     "pages/logs/main"
   ],
   "window": {
