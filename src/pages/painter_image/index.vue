@@ -1,7 +1,7 @@
 <template lang="pug">
   div#mine-wrapper
-    painter(:customStyle="customStyle" @imgOK="onImgOK" :palette="template" :dirty="true")
-    button(@click="save()") 保存
+    painter-box(:getCustomStyle="customStyle" :getTemplate="template" @sendShareImage="getShareImage")
+    button(open-type="getUserInfo" @getuserinfo="userInfoHandler") 保存
 </template>
 
 <script src="./control.js"></script>

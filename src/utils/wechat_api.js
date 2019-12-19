@@ -1,6 +1,29 @@
 // import config from './config'
 
 /**
+ * 查看受否授权
+ * @returns {Procdmise<void>}
+ */
+export const WXgetSetting = async () => {
+  return new Promise((resolve, reject) => {
+    // 查看是否授权
+    wx.getSetting({
+      success (res) {
+        if (res.authSetting['scope.userInfo']) {
+          // 已经授权，可以直接调用 getUserInfo 获取头像昵称
+          wx.getUserInfo({
+            lang: 'zh_CN',
+            success: (res) => {
+              console.log(res.userInfo)
+            }
+          })
+        }
+      }
+    })
+  })
+}
+
+/**
  * 获取用户基本信息， 不需要登录
  * @returns {Procdmise<void>}
  */

@@ -1,6 +1,6 @@
 <template lang="pug">
   div#wrapper
-    painter(:customStyle="customStyle" @imgOK="onImgOK" :palette="template" :dirty="true")
+    painter(:customStyle="getCustomStyle" @imgOK="onImgOK" :palette="getTemplate" :dirty="true")
 </template>
 
 <script src="./control.js"></script>
