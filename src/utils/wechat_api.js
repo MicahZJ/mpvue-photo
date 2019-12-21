@@ -295,7 +295,7 @@ export const wxChooseImage = (count, sizeType, sourceType) => {
  * @returns {Promise<any>}
  */
 export const wxGetImageInfo = (srcPath) => {
-  console.log('wxGetImageInfo')
+  console.log('wxGetImageInfo', srcPath)
   return new Promise((resolve, reject) => {
     wx.getImageInfo({
       src: srcPath,
@@ -366,6 +366,23 @@ export const wxDownloadFile = (path) => {
         console.log(err)
         reject(err)
       }
+    })
+  })
+}
+
+/**
+ * 获取节点信息
+ * @param dom
+ * @returns {Promise<*>}
+ * @constructor
+ */
+export const WXselectDom = async (dom) => {
+  return new Promise((resolve, reject) => {
+    const query = wx.createSelectorQuery()
+    query.select(dom).boundingClientRect()
+    query.selectViewport().scrollOffset()
+    query.exec((res) => {
+      resolve(res)
     })
   })
 }

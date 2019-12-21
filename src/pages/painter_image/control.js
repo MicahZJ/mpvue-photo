@@ -1,59 +1,52 @@
-import Card from '@/components/palette/card'
-import {wxLoading, wxHideLoading} from '../../utils/wechat_api'
+import PainterBox from '@/components/canvas_painter/index'
+import { wxHideLoading, wxLoading, WXselectDom, WXgetSetting } from '../../utils/wechat_api'
 
 export default {
   data () {
     return {
+      previewFlag: false, // 预览展示
+      createCanvas: false, // 图片绘制完成
+      playSelf: false, // 去绘制自己的头像
       shareImg: '',
-      customStyle: 'margin-left:40rpx',
-      template: {}
+      template: {}, // 参数
+      customStyle: '', // 样式
+      demoImage: 'https://www.micahzj.com/images/wechat/WechatDemo.png',
+      demoIcon: 'https://www.micahzj.com/images/wechat/user_icon.png',
+      imageWidth: 0, // 小图片宽
+      imageHeight: 0, // 小图片高
+      divWidth: 0, // 背景宽
+      divHeight: 0, // 背景高
+      clientX: 0, // x轴
+      clientY: 0 // y轴
+    }
+  },
+  watch: {},
+  computed: {
+    translateXY () {
+      return `translate(${this.clientX}px, ${this.clientY}px)`
     }
   },
   methods: {
+
     /**
-     * 生成图片参数
+     * 获取用户信息
      */
-    createAttributes () {
-      this.template = {
-        background: 'https://qhyxpicoss.kujiale.com/2018/06/12/LMPUSDAKAEBKKOASAAAAAAY8_981x600.png',
-        width: '375px',
-        height: '375px',
-        borderRadius: '10px',
-        views: [
-          {
-            type: 'image',
-            url: 'https://qhyxpicoss.kujiale.com/r/2017/12/04/L3D123I45VHNYULVSAEYCV3P3X6888_3200x2400.jpg@!70q',
-            css: {
-              top: '48rpx',
-              right: '48rpx',
-              width: '192rpx',
-              height: '192rpx',
-              borderRadius: '10rpx',
-              align: 'right'
-            }
-          },
-          {
-            type: 'qrcode',
-            content: 'https://github.com/Kujiale-Mobile',
-            css: {
-              left: '70rpx',
-              bottom: '30rpx',
-              width: '130rpx',
-              height: '130rpx'
-            }
-          },
-          {
-            type: 'text',
-            text: '酷家乐 移动前端',
-            css: {
-              left: '50rpx',
-              top: '48rpx',
-              fontSize: '40rpx',
-              align: 'left'
-            }
-          }
-        ]
-      }
+    async getUserInfo () {
+      let res = await WXgetSetting()
+      console.log('info', res)
+    },
+
+    /**
+     * 获取照片大小
+     */
+    async getPhotoInfo () {
+      let iconImageInfo = await WXselectDom('.icon-css')
+      this.imageWidth = iconImageInfo[0].width
+      this.imageHeight = iconImageInfo[0].height
+
+      let painterDivInfo = await WXselectDom('.painter-box')
+      this.divWidth = painterDivInfo[0].width
+      this.divHeight = painterDivInfo[0].height
     },
 
     /**
@@ -61,34 +54,33 @@ export default {
      */
     getShareImage (e) {
       this.shareImg = e
+      this.createCanvas = true
+      wxHideLoading()
       console.log('img', this.shareImg)
-    },
-
-    /**
-     * 获取用户信息后的回调
-     * @param e
-     */
-    userInfoHandler (e) {
-      console.log('获取信息', e)
     },
 
     /**
      * 保存图片
      */
-    save () {
-      console.log('on save click')
+    save (flag) {
+      if (!flag) {
+        this.previewFlag = false
+        return
+      }
+
       let that = this
       wxLoading('保存图片中')
       wx.saveImageToPhotosAlbum({
         filePath: this.shareImg,
-        success: res => {
+        success: (res) => {
           wxHideLoading()
           wx.showToast({
             title: '保存成功~',
             icon: 'none'
           })
+          that.playSelf = true
         },
-        fail: err => {
+        fail: (err) => {
           wxHideLoading()
           wx.showToast({
             title: '保存失败T_T,您未授予权限',
@@ -115,19 +107,106 @@ export default {
           })
         }
       })
+    },
+
+    clickOne (e) { // 单点
+      console.log('one', e)
+    },
+    clickLong (e) { // 长按
+      console.log('long', e)
+    },
+
+    // touch开始
+    touchStart (e) { // 点击开始
+      console.log('start', e)
+    },
+
+    // touch移动
+    touchMove (e) { // 移动开始
+      // console.log('move', e)
+      this.clientX = e.clientX - this.imageWidth / 2
+      this.clientY = e.clientY - this.imageHeight / 2
+      console.log('move', this.clientX, this.clientY)
+    },
+
+    // touch被中断（电话，闹钟，推送等）
+    touchCancel (e) { // 中断
+      console.log('cancel', e)
+      if (this.clientX < 0) {
+        this.clientX = 0
+      } else if (this.clientX > (this.divWidth - this.imageWidth)) {
+        this.clientX = this.divWidth - this.imageWidth
+      }
+
+      if (this.clientY < 0) {
+        this.clientY = 0
+      } else if (this.clientY > this.divHeight - this.imageHeight) {
+        this.clientY = this.divHeight - this.imageHeight
+      }
+    },
+
+    // touch结束
+    touchEnd (e) { // 结束
+      console.log('end', e)
+      if (this.clientX < 0) {
+        this.clientX = 0
+      } else if (this.clientX > (this.divWidth - this.imageWidth)) {
+        this.clientX = this.divWidth - this.imageWidth
+      }
+
+      if (this.clientY < 0) {
+        this.clientY = 0
+      } else if (this.clientY > this.divHeight - this.imageHeight) {
+        this.clientY = this.divHeight - this.imageHeight
+      }
+    },
+
+    /**
+     * 展示预览层
+     */
+    async showPreview () {
+      wxLoading('绘制中')
+      this.previewFlag = true
+      // let bg = await wxGetImageInfo(this.demoImage)
+      // let iconImage = await wxGetImageInfo(this.demoIcon)
+      this.createAttributes(this.demoImage, this.demoIcon)
+    },
+
+    /**
+     *  生成图片参数
+     * @param bg 背景
+     * @param iconImage 小图片
+     */
+    createAttributes (bg, iconImage) {
+      this.template = {
+        background: bg,
+        width: this.divWidth + 'px',
+        height: this.divHeight + 'px',
+        views: [
+          {
+            type: 'image',
+            url: iconImage,
+            css: {
+              top: this.clientY + 'px',
+              left: this.clientX + 'px',
+              width: this.imageWidth + 'px',
+              height: this.imageHeight + 'px'
+            }
+          }
+        ]
+      }
     }
   },
   props: [],
   components: {
+    PainterBox
   },
   onLoad () {
-    const card = new Card()
-    const userInfo = {
-      avatar: 'https://qhyxpicoss.kujiale.com/r/2017/12/04/L3D123I45VHNYULVSAEYCV3P3X6888_3200x2400.jpg@!70q'
-    }
-    this.template = card.do(userInfo)
   },
   onShow () {
+    this.createAttributes()
+    this.getPhotoInfo()
+    this.getUserInfo()
   },
   mounted () {
   },

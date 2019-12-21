@@ -46,7 +46,14 @@
 		},
 		"miniprogram": {
 			"current": -1,
-			"list": []
+			"list": [
+				{
+					"id": -1,
+					"name": "mine",
+					"pathName": "pages/painter_image/main",
+					"scene": null
+				}
+			]
 		}
 	}
 }
