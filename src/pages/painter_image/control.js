@@ -1,17 +1,26 @@
 import PainterBox from '@/components/canvas_painter/index'
-import { wxHideLoading, wxLoading, WXselectDom, WXgetSetting } from '../../utils/wechat_api'
+import { wxHideLoading, wxLoading, WXselectDom, WXgetSetting } from "../../utils/wechat_api";
 
 export default {
   data () {
     return {
+      TT: '',
+      TT1: '',
       previewFlag: false, // 预览展示
       createCanvas: false, // 图片绘制完成
       playSelf: false, // 去绘制自己的头像
       shareImg: '',
-      template: {}, // 参数
-      customStyle: '', // 样式
-      demoImage: 'https://www.micahzj.com/images/wechat/WechatDemo.png',
+      getTemplate: {}, // 参数
+      getCustomStyle: '', // 样式
+      userImage: '',
       demoIcon: 'https://www.micahzj.com/images/wechat/user_icon.png',
+      iconArr: [
+        'https://www.micahzj.com/images/wechat/christmas_hat.png',
+        'https://www.micahzj.com/images/wechat/christmas_hat_half.png',
+        'https://www.micahzj.com/images/wechat/christmas_hat_green.png',
+        'https://www.micahzj.com/images/wechat/christmas_hat_green_half.png',
+        'https://www.micahzj.com/images/wechat/user_icon.png'
+      ],
       imageWidth: 0, // 小图片宽
       imageHeight: 0, // 小图片高
       divWidth: 0, // 背景宽
@@ -33,7 +42,8 @@ export default {
      */
     async getUserInfo () {
       let res = await WXgetSetting()
-      console.log('info', res)
+      this.userImage = res.avatarUrl.toString().slice(0, res.avatarUrl.toString().length - 3) + '0'
+      // console.log('info', this.userImage)
     },
 
     /**
@@ -50,13 +60,13 @@ export default {
     },
 
     /**
-     * 获取图片
+     * 图片生成
+     * @param e
      */
-    getShareImage (e) {
-      this.shareImg = e
+    onImgOK (e) {
+      this.shareImg = e.mp.detail.path
       this.createCanvas = true
       wxHideLoading()
-      console.log('img', this.shareImg)
     },
 
     /**
@@ -110,28 +120,28 @@ export default {
     },
 
     clickOne (e) { // 单点
-      console.log('one', e)
+      // console.log('one', e)
     },
     clickLong (e) { // 长按
-      console.log('long', e)
+      // console.log('long', e)
     },
 
     // touch开始
     touchStart (e) { // 点击开始
-      console.log('start', e)
+      // console.log('start', e)
     },
 
     // touch移动
     touchMove (e) { // 移动开始
-      // console.log('move', e)
+      // // console.log('move', e)
       this.clientX = e.clientX - this.imageWidth / 2
       this.clientY = e.clientY - this.imageHeight / 2
-      console.log('move', this.clientX, this.clientY)
+      // console.log('move', this.clientX, this.clientY)
     },
 
     // touch被中断（电话，闹钟，推送等）
     touchCancel (e) { // 中断
-      console.log('cancel', e)
+      // console.log('cancel', e)
       if (this.clientX < 0) {
         this.clientX = 0
       } else if (this.clientX > (this.divWidth - this.imageWidth)) {
@@ -147,7 +157,7 @@ export default {
 
     // touch结束
     touchEnd (e) { // 结束
-      console.log('end', e)
+      // console.log('end', e)
       if (this.clientX < 0) {
         this.clientX = 0
       } else if (this.clientX > (this.divWidth - this.imageWidth)) {
@@ -167,9 +177,9 @@ export default {
     async showPreview () {
       wxLoading('绘制中')
       this.previewFlag = true
-      // let bg = await wxGetImageInfo(this.demoImage)
+      // let bg = await wxGetImageInfo(this.userImage)
       // let iconImage = await wxGetImageInfo(this.demoIcon)
-      this.createAttributes(this.demoImage, this.demoIcon)
+      this.createAttributes(this.userImage, this.demoIcon)
     },
 
     /**
@@ -178,7 +188,7 @@ export default {
      * @param iconImage 小图片
      */
     createAttributes (bg, iconImage) {
-      this.template = {
+      this.getTemplate = {
         background: bg,
         width: this.divWidth + 'px',
         height: this.divHeight + 'px',
@@ -195,6 +205,14 @@ export default {
           }
         ]
       }
+    },
+
+    /**
+     * 选择icon
+     * @param item
+     */
+    chooseIcon (item) {
+      this.demoIcon = item
     }
   },
   props: [],
@@ -204,9 +222,8 @@ export default {
   onLoad () {
   },
   onShow () {
-    this.createAttributes()
-    this.getPhotoInfo()
     this.getUserInfo()
+    this.getPhotoInfo()
   },
   mounted () {
   },

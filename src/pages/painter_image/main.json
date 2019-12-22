@@ -4,6 +4,7 @@
   "navigationBarTitleText": "依葫芦画瓢",
   "backgroundColor": "#eeeeee",
   "backgroundTextStyle": "light",
+  "disableScroll":true,
   "usingComponents": {
     "painter": "/static/painter/painter"
   }

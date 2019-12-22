@@ -14,7 +14,8 @@ export const WXgetSetting = async () => {
           wx.getUserInfo({
             lang: 'zh_CN',
             success: (res) => {
-              console.log(res.userInfo)
+              // console.log(res.userInfo)
+              resolve(res.userInfo)
             }
           })
         }

@@ -2,9 +2,8 @@
   div#painter-wrapper
     div.preview-box(v-if="previewFlag")
       span.title ↘下面是生成好的图片↙
-      painter-box(:getCustomStyle="customStyle"
-                  :getTemplate="template"
-                  @sendShareImage="getShareImage")
+      span.title ↘点击保存就行了↙
+      painter(:customStyle="getCustomStyle" @imgOK="onImgOK" :palette="getTemplate" :dirty="true")
       div.button-box(v-if="createCanvas")
         button.button-cancel(@click="save(false)") 取消
         button.button-confirm(@click="save(true)") 保存

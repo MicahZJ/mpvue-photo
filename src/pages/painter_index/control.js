@@ -8,16 +8,16 @@ export default {
       createCanvas: false, // 图片绘制完成
       playSelf: false, // 去绘制自己的头像
       shareImg: '',
-      template: {}, // 参数
+      getTemplate: {}, // 参数
       demo: {
-        background: 'https://qhyxpicoss.kujiale.com/2018/06/12/LMPUSDAKAEBKKOASAAAAAAY8_981x600.png',
+        background: 'png',
         width: '375px',
         height: '375px',
         borderRadius: '10px',
         views: [
           {
             type: 'image',
-            url: 'https://qhyxpicoss.kujiale.com/r/2017/12/04/L3D123I45VHNYULVSAEYCV3P3X6888_3200x2400.jpg@!70q',
+            url: 'png',
             css: {
               top: '48rpx',
               right: '48rpx',
@@ -49,7 +49,7 @@ export default {
           }
         ]
       },
-      customStyle: '', // 样式
+      getCustomStyle: '', // 样式
       demoImage: 'https://www.micahzj.com/images/wechat/WechatDemo.png',
       demoIcon: 'https://www.micahzj.com/images/wechat/user_icon.png',
       imageWidth: 0, // 小图片宽
@@ -87,13 +87,16 @@ export default {
     },
 
     /**
-     * 获取图片
+     * 图片生成
+     * @param e
      */
-    getShareImage (e) {
-      this.shareImg = e
+    onImgOK (e) {
+      this.shareImg = e.mp.detail.path
       this.createCanvas = true
       wxHideLoading()
-      console.log('img', this.shareImg)
+      // this.$emit('sendShareImage', this.shareImg)
+      // 两种路径是一样的
+      // console.log(e)
     },
 
     /**
@@ -119,6 +122,7 @@ export default {
         },
         fail: (err) => {
           wxHideLoading()
+          // console.log('err', err)
           wx.showToast({
             title: '保存失败T_T,您未授予权限',
             icon: 'none'
@@ -147,15 +151,15 @@ export default {
     },
 
     clickOne (e) { // 单点
-      console.log('one', e)
+      // console.log('one', e)
     },
     clickLong (e) { // 长按
-      console.log('long', e)
+      // console.log('long', e)
     },
 
     // touch开始
     touchStart (e) { // 点击开始
-      console.log('start', e)
+      // console.log('start', e)
     },
 
     // touch移动
@@ -163,12 +167,12 @@ export default {
       // console.log('move', e)
       this.clientX = e.clientX - this.imageWidth / 2
       this.clientY = e.clientY - this.imageHeight / 2
-      console.log('move', this.clientX, this.clientY)
+      // console.log('move', this.clientX, this.clientY)
     },
 
     // touch被中断（电话，闹钟，推送等）
     touchCancel (e) { // 中断
-      console.log('cancel', e)
+      // console.log('cancel', e)
       if (this.clientX < 0) {
         this.clientX = 0
       } else if (this.clientX > (this.divWidth - this.imageWidth)) {
@@ -184,7 +188,7 @@ export default {
 
     // touch结束
     touchEnd (e) { // 结束
-      console.log('end', e)
+      // console.log('end', e)
       if (this.clientX < 0) {
         this.clientX = 0
       } else if (this.clientX > (this.divWidth - this.imageWidth)) {
@@ -215,7 +219,7 @@ export default {
      * @param iconImage 小图片
      */
     createAttributes (bg, iconImage) {
-      this.template = {
+      this.getTemplate = {
         background: bg,
         width: this.divWidth + 'px',
         height: this.divHeight + 'px',
@@ -239,9 +243,9 @@ export default {
      * @param e
      */
     userInfoHandler (e) {
-      console.log('获取信息', e)
+      // console.log('获取信息', e)
       let msg = e.target.errMsg
-      console.log('msg', msg)
+      // console.log('msg', msg)
       if (msg === 'getUserInfo:fail auth deny') {
         wx.showToast({
           title: '没有授予权限是无法对自己的头像操作的哦～',
@@ -260,15 +264,14 @@ export default {
   onLoad () {
   },
   onShow () {
-    this.createAttributes()
     this.getPhotoInfo()
   },
   mounted () {
   },
   onHide () {
-    console.log('hide')
+    // console.log('hide')
   },
   onUnload () {
-    console.log('unload')
+    // console.log('unload')
   }
 }

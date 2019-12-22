@@ -179,8 +179,12 @@ Component({
         wx.canvasToTempFilePath({
           canvasId: 'k-canvas',
           destWidth: that.canvasWidthInPx,
+          width: that.canvasWidthInPx,
           destHeight: that.canvasHeightInPx,
+          height: that.canvasHeightInPx,
+          multiple: 2,
           success: function (res) {
+            // console.log('temp', res)
             that.getImageInfo(res.tempFilePath);
           },
           fail: function (error) {
